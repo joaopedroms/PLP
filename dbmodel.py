@@ -71,5 +71,3 @@ class Table(object):
             myDiagram.addClass(t, atr_str_lst, meth_str_lst)
 
         myDiagram.display()
-
-        testando o acesso do git
