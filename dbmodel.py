@@ -10,17 +10,15 @@ class UML:
         self.Graph.node_attr['fontname'] = 'calibri'
 
     def novaClasse(self, nome, atributos, metodos):
-        line_break = '|'
-        align_left = '\l'
-        node_def = '{' + nome + line_break
+        node_def = '{' + nome + '|'
 
         for atributo in atributos:
-            node_def += atributo + align_left
+            node_def += atributo + '\l'
 
-        node_def += line_break
+        node_def += '|'
 
         for metodo in metodos:
-            node_def += metodo + align_left
+            node_def += metodo + '\l'
 
         node_def += '}'
 
@@ -146,25 +144,25 @@ class Table(object):
                         diagrama.Graph.add_edge(t, dct[a].__class__.__name__, color='#0000ff', label='1\n' + a)
                     else:
                         diagrama.Graph.add_edge(t, dct[a].__class__.__name__, color='#0000ff', label='1\n')
-            atribs_str_lst = ['+ ' + a + ': ' + dct[a].getStrRep() for a in atribs]
+            atribsLst = ['+ ' + a + ': ' + dct[a].getStrRep() for a in atribs]
 
             meth = [m for m in dct if callable(dct[m]) and m != '__init__']
 
-            meth_str_lst = []
+            methLst = []
 
             for m in meth:
                 args = ', '.join([arg for arg in dct[m].__code__.co_varnames if arg != 'self'])
-                meth_str_lst.append('+ ' + m + '(' + args + ')')
+                methLst.append('+ ' + m + '(' + args + ')')
 
             for t2 in Table.__filhas__:
                 if t != t2:
                     if issubclass(Table.__filhas__[t], Table.__filhas__[t2]):
                         diagrama.Graph.add_edge(t, t2, color='#ff0000')
 
-            diagrama.novaClasse(t, atribs_str_lst, meth_str_lst)
+            diagrama.novaClasse(t, atribsLst, methLst)
 
         diagrama.Graph.layout(prog='dot')
-        diagrama.Graph.draw('UMLDiagram.png')
+        diagrama.Graph.draw('diagrama.png')
         print diagrama.Graph
-        img = Image.open('UMLDiagram.png')
+        img = Image.open('diagrama.png')
         img.show()
