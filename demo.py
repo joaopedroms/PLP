@@ -23,7 +23,7 @@ class Terciaria(Table):
     def metodo2(self, param1):
         pass
 
-    def metodo3(self, param1, param2, param3):
+    def metodo3(self, param1, param2, param3, param4):
         pass
 
 
@@ -45,7 +45,7 @@ class Filha2(Filha, Aleatoria):
     atributo13 = Char(10)
     atributo14 = String()
 
-    def metodo(self):
+    def metodo(self, param):
         pass
 
 

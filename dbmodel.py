@@ -136,9 +136,9 @@ class Table(object):
 
             dct = Table.__filhas__[t].__dict__
 
-            atrs = [a for a in dct if isinstance(dct[a], Coluna) or isinstance(dct[a], Table)]
+            atribs = [a for a in dct if isinstance(dct[a], Coluna) or isinstance(dct[a], Table)]
 
-            for a in atrs:
+            for a in atribs:
                 if isinstance(dct[a], List):
                     diagrama.Graph.add_edge(t, dct[a].collection_type, color='#0000ff', label=str(dct[a].min) + '..*')
                 if dct[a].__class__.__name__ in Table.__filhas__.keys():
@@ -146,7 +146,7 @@ class Table(object):
                         diagrama.Graph.add_edge(t, dct[a].__class__.__name__, color='#0000ff', label='1\n' + a)
                     else:
                         diagrama.Graph.add_edge(t, dct[a].__class__.__name__, color='#0000ff', label='1\n')
-            atr_str_lst = ['+ ' + a + ': ' + dct[a].getStrRep() for a in atrs]
+            atribs_str_lst = ['+ ' + a + ': ' + dct[a].getStrRep() for a in atribs]
 
             meth = [m for m in dct if callable(dct[m]) and m != '__init__']
 
@@ -161,7 +161,7 @@ class Table(object):
                     if issubclass(Table.__filhas__[t], Table.__filhas__[t2]):
                         diagrama.Graph.add_edge(t, t2, color='#ff0000')
 
-            diagrama.novaClasse(t, atr_str_lst, meth_str_lst)
+            diagrama.novaClasse(t, atribs_str_lst, meth_str_lst)
 
         diagrama.Graph.layout(prog='dot')
         diagrama.Graph.draw('UMLDiagram.png')
