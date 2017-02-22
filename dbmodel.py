@@ -1,5 +1,115 @@
-from dbtypes import *
-from pgv import UMLDiagram
+import pygraphviz as pgv
+from PIL import Image
+
+
+class UMLDiagram:
+    def __init__(self):
+        self.Graph = pgv.AGraph(strict=False, directed=True)
+        self.Graph.node_attr['shape'] = 'record'
+        self.Graph.node_attr['fillcolor'] = '#fdffd8'
+        self.Graph.node_attr['style'] = 'filled'
+        self.Graph.node_attr['fontname'] = 'calibri'
+
+    def addClass(self, name, attrs, methods):
+        line_break = '|'
+        align_left = '\l'
+
+        node_def = '{' + name + line_break
+
+        for attr in attrs:
+            node_def += attr + align_left
+
+        node_def += line_break
+
+        for method in methods:
+            node_def += method + align_left
+
+        node_def += '}'
+
+        self.Graph.add_node(name, label=node_def)
+
+    def display(self):
+        self.Graph.layout(prog='dot')
+        self.Graph.draw('UMLDiagram.png')
+        print self.Graph
+        img = Image.open('UMLDiagram.png')
+        img.show()
+
+    def addRelationship(self, from_, to, card):
+        self.Graph.add_edge(from_, to, color='#0000ff', label=card)
+
+    def addExtension(self, extends, extended):
+        self.Graph.add_edge(extends, extended, color='#ff0000')
+
+
+class Coluna(object):
+    def __init__(self, unique=False):
+        self.unique = unique
+
+    def getStrRep(self):
+        return self.__class__.__name__
+
+    def properties(self):
+        pass
+
+class Char(Coluna):
+    def __init__(self, limit=1, unique=False):
+        Coluna.__init__(self, unique)
+        self.limit = limit
+
+    def properties(self):
+        uniqueness = ' UNIQUE ' if self.unique else ''
+        return 'char(' + str(self.limit) + ')' + uniqueness
+
+    def getStrRep(self):
+        return 'Char(%d)' % self.limit
+
+class Boolean(Coluna):
+    def __init__(self, unique=False):
+        Coluna.__init__(self, unique)
+
+class String(Coluna):
+    def __init__(self, unique=False):
+        Coluna.__init__(self, unique)
+
+class Integer(Coluna):
+    def __init__(self, unique=False):
+        Coluna.__init__(self, unique)
+
+class Float(Coluna):
+    def __init__(self, unique=False):
+        Coluna.__init__(self, unique)
+
+class DateTime(Coluna):
+    def __init__(self, unique=False):
+        Coluna.__init__(self, unique)
+
+class Date(Coluna):
+    def __init__(self, unique=False):
+        Coluna.__init__(self, unique)
+
+class List(Coluna):
+    def __init__(self, collection_type, min, unique=False):
+        self.collection_type = collection_type.__name__
+        self.min = min
+        Coluna.__init__(self, unique)
+
+    def getStrRep(self):
+        return "List(" + self.collection_type + ")"
+
+class Enum(List):
+    def __init__(self, collection_type, min=0, unique=False):
+        List.__init__(self, collection_type, min, unique)
+
+    def getStrRep(self):
+        return "Enum(" + self.collection_type + ")"
+
+class Vector(List):
+    def __init__(self, collection_type, min=0, unique=False):
+        List.__init__(self, collection_type, min, unique)
+
+    def getStrRep(self):
+        return "Vector(" + self.collection_type + ")"
 
 
 class Meta(type):
@@ -45,7 +155,7 @@ class Table(object):
             atrs = [a for a in dct if isinstance(dct[a], Coluna) or isinstance(dct[a], Table)]
 
             for a in atrs:
-                if isinstance(dct[a], List):
+                if isinstance(dct[a], Lista):
                     myDiagram.addRelationship(t, dct[a].collection_type, str(dct[a].min) + '..*')
                 if dct[a].__class__.__name__ in Table.__filhas__.keys():
                     if show_roles:
