@@ -1,8 +1,7 @@
 import pygraphviz as pgv
 from PIL import Image
 
-
-class UMLDiagram:
+class UML:
     def __init__(self):
         self.Graph = pgv.AGraph(strict=False, directed=True)
         self.Graph.node_attr['shape'] = 'record'
@@ -10,37 +9,22 @@ class UMLDiagram:
         self.Graph.node_attr['style'] = 'filled'
         self.Graph.node_attr['fontname'] = 'calibri'
 
-    def addClass(self, name, attrs, methods):
+    def novaClasse(self, nome, atributos, metodos):
         line_break = '|'
         align_left = '\l'
+        node_def = '{' + nome + line_break
 
-        node_def = '{' + name + line_break
-
-        for attr in attrs:
-            node_def += attr + align_left
+        for atributo in atributos:
+            node_def += atributo + align_left
 
         node_def += line_break
 
-        for method in methods:
-            node_def += method + align_left
+        for metodo in metodos:
+            node_def += metodo + align_left
 
         node_def += '}'
 
-        self.Graph.add_node(name, label=node_def)
-
-    def display(self):
-        self.Graph.layout(prog='dot')
-        self.Graph.draw('UMLDiagram.png')
-        print self.Graph
-        img = Image.open('UMLDiagram.png')
-        img.show()
-
-    def addRelationship(self, from_, to, card):
-        self.Graph.add_edge(from_, to, color='#0000ff', label=card)
-
-    def addExtension(self, extends, extended):
-        self.Graph.add_edge(extends, extended, color='#ff0000')
-
+        self.Graph.add_node(nome, label=node_def)
 
 class Coluna(object):
     def __init__(self, unique=False):
@@ -139,8 +123,8 @@ class Table(object):
         return self.__class__.__name__
 
     @staticmethod
-    def show_model(show_roles=False):
-        myDiagram = UMLDiagram()
+    def modelo(show_roles=False):
+        diagrama = UML()
 
         for t in Table.__filhas__:
             bases = [c.__name__ for c in Table.__filhas__[t].__bases__ if c.__name__ != 'Table']
@@ -156,13 +140,12 @@ class Table(object):
 
             for a in atrs:
                 if isinstance(dct[a], List):
-                    myDiagram.addRelationship(t, dct[a].collection_type, str(dct[a].min) + '..*')
+                    diagrama.Graph.add_edge(t, dct[a].collection_type, color='#0000ff', label=str(dct[a].min) + '..*')
                 if dct[a].__class__.__name__ in Table.__filhas__.keys():
                     if show_roles:
-                        myDiagram.addRelationship(t, dct[a].__class__.__name__, '1\n' + a)
+                        diagrama.Graph.add_edge(t, dct[a].__class__.__name__, color='#0000ff', label='1\n' + a)
                     else:
-                        myDiagram.addRelationship(t, dct[a].__class__.__name__, '1\n')
-
+                        diagrama.Graph.add_edge(t, dct[a].__class__.__name__, color='#0000ff', label='1\n')
             atr_str_lst = ['+ ' + a + ': ' + dct[a].getStrRep() for a in atrs]
 
             meth = [m for m in dct if callable(dct[m]) and m != '__init__']
@@ -176,8 +159,12 @@ class Table(object):
             for t2 in Table.__filhas__:
                 if t != t2:
                     if issubclass(Table.__filhas__[t], Table.__filhas__[t2]):
-                        myDiagram.addExtension(t, t2)
+                        diagrama.Graph.add_edge(t, t2, color='#ff0000')
 
-            myDiagram.addClass(t, atr_str_lst, meth_str_lst)
+            diagrama.novaClasse(t, atr_str_lst, meth_str_lst)
 
-        myDiagram.display()
+        diagrama.Graph.layout(prog='dot')
+        diagrama.Graph.draw('UMLDiagram.png')
+        print diagrama.Graph
+        img = Image.open('UMLDiagram.png')
+        img.show()

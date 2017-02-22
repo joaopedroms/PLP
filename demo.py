@@ -49,4 +49,4 @@ class Filha2(Filha, Aleatoria):
         pass
 
 
-Table.show_model(show_roles=True)
+Table.modelo(show_roles=True)
