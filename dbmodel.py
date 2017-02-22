@@ -155,7 +155,7 @@ class Table(object):
             atrs = [a for a in dct if isinstance(dct[a], Coluna) or isinstance(dct[a], Table)]
 
             for a in atrs:
-                if isinstance(dct[a], Lista):
+                if isinstance(dct[a], List):
                     myDiagram.addRelationship(t, dct[a].collection_type, str(dct[a].min) + '..*')
                 if dct[a].__class__.__name__ in Table.__filhas__.keys():
                     if show_roles:

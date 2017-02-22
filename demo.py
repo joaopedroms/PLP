@@ -1,59 +1,51 @@
 from dbmodel import *
 
 
-class myClass(Table):
-    attr1 = Char(20)
-    attr2 = String()
+class Primaria(Table):
+    atributo1 = Char(20)
+    atributo2 = String()
 
-    def method(self, arg1, arg2):
+    def metodo(self, param1, param2):
         pass
 
 
-class subclass(myClass):
-    attr3 = Boolean()
+class Secundaria(Primaria):
+    atributo3 = Boolean()
 
-    def method(self):
+    def metodo(self):
         pass
 
 
-class anotherClass(Table):
-    attr4 = myClass()
-    attr5 = Vector(subclass, min=3)
+class Terciaria(Table):
+    atributo4 = Primaria()
+    atributo5 = Vector(Secundaria, min=3)
 
-    def method2(self, param1):
+    def metodo2(self, param1):
         pass
 
-    def method3(self, param1, param2, param3):
-        pass
-
-
-class lonelyClass(Table):
-    attr10 = String()
-
-    def method(self):
+    def metodo3(self, param1, param2, param3):
         pass
 
 
-class thirdClass(Table):
-    attr6 = Integer()
-    attr7 = Float()
-    attr8 = Date()
-    attr9 = DateTime()
-    lst = Enum(anotherClass)
-    lst2 = List(lonelyClass, min=2)
+class Aleatoria(Table):
+    atributo10 = String()
 
-    def method(self, param1, param2):
-        pass
-
-    def voidMethod(self):
+    def metodo(self):
         pass
 
 
-class childOfLonelyAndThird(lonelyClass, thirdClass):
-    attr11 = List(anotherClass, min=0)
-    attr12 = Char(20)
+class Filha(Aleatoria, Terciaria):
+    atributo11 = List(Terciaria, min=0)
+    atributo12 = Char(20)
 
-    def method(self):
+    def metodo(self):
+        pass
+
+class Filha2(Filha, Aleatoria):
+    atributo13 = Char(10)
+    atributo14 = String()
+
+    def metodo(self):
         pass
 
 
