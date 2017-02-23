@@ -5,9 +5,9 @@ class UML:
     def __init__(self):
         self.Graph = pgv.AGraph(strict=False, directed=True)
         self.Graph.node_attr['shape'] = 'record'
-        self.Graph.node_attr['fillcolor'] = '#fdffd8'
         self.Graph.node_attr['style'] = 'filled'
         self.Graph.node_attr['fontname'] = 'calibri'
+        self.Graph.node_attr['fillcolor'] = '#fdffd8'
 
     def novaClasse(self, nome, atributos, metodos):
         node_def = '{' + nome + '|'
